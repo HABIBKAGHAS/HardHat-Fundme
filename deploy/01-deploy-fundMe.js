@@ -1,8 +1,10 @@
 const { network } = require("hardhat");
 const {
   developmentChains,
-  netwrokConfig,
+  networkConfig,
 } = require("../helper-hardhat-config");
+
+const { verify } = require("../utils/verify");
 module.exports.default = async function ({ getNamedAccounts, deployments }) {
   const { deploy, log } = deployments;
   const { deployer } = await getNamedAccounts();
@@ -14,14 +16,24 @@ module.exports.default = async function ({ getNamedAccounts, deployments }) {
     const ethUsdAggregatir = await deployments.get("MockV3Aggregator");
     ethUsdPriceFeedAddress = ethUsdAggregatir.address;
   } else {
-    netwrokConfig[chainId].ethUsdPriceFeed;
+    ethUsdPriceFeedAddress = networkConfig[chainId].ethUsdPriceFeed;
   }
+
+  const args = [ethUsdPriceFeedAddress];
 
   const fundMe = await deploy("FundMe", {
     from: deployer,
-    args: [ethUsdPriceFeedAddress],
+    args: args,
     log: true,
+    waitConfirmations: network.config.blockConfirmation || 1,
   });
+
+  if (
+    !developmentChains.includes(network.name) &&
+    process.env.ETHERSCAN_API_KEY
+  ) {
+    await verify(fundMe.address, args);
+  }
   log("-----------------------------------------------------------------");
 };
 

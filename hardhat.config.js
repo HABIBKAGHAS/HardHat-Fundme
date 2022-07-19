@@ -20,13 +20,20 @@ module.exports = {
       accounts: [PRIVATE_KEY],
       chainId: 4,
     },
+    hardhat: {
+          // accounts:Thanks Hardhat!,
+      chainId: 31337,
+    },
   },
   etherscan: {
     apiKey: ETHERSCAN_API_KEY,
   },
   namedAccounts: {
     deployer: {
-      default: 0, // here this will by default take the first account as deployer
+          default: 0,
+    },
+    users: {
+          default: 0,
     },
   },
   gasReporter: {

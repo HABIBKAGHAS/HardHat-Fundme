@@ -11,9 +11,9 @@ const { developmentChains } = require("../../helper-hardhat-config");
       const sendValue = ethers.utils.parseEther("1"); // 1 ETH
       beforeEach(async function () {
         deployer = (await getNamedAccounts()).deployer;
-        await deployments.fixture();
-        fundme = await ethers.getContract("FundMe", deployer);
-        mockV3Aggregator = await ethers.getContract(
+        await deployments.fixture(["all"]);
+        fundme = await ethers.getContractAt("FundMe", deployer);
+        mockV3Aggregator = await ethers.getContractAt(
           "MockV3Aggregator",
           deployer
         );
